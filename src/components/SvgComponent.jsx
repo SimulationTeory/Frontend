@@ -3,6 +3,7 @@ const SvgComponent = () => (
         <g id="pert_diagram_10_nodes 1">
             <path id="edge-0-10" d="M70 273L182 186" stroke="black" stroke-width="2" />
             <path id="edge-0-20" d="M70 328L185 451" stroke="black" stroke-width="2" />
+            <path id="edge-0-30" d="M81 299L356 200" stroke="black" stroke-width="2" />
             <path id="edge-10-30" d="M260 174.109L349 173.991" stroke="black" stroke-width="2" />
             <path id="edge-20-40" d="M233 447L330 346" stroke="black" stroke-width="2" />
             <path id="edge-40-60" d="M393 318L555 323" stroke="black" stroke-width="2" />
