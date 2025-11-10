@@ -3,7 +3,6 @@ const SvgComponent = () => (
         <g id="pert_diagram_10_nodes 1">
             <path id="edge-0-10" d="M70 273L182 186" stroke="black" stroke-width="2" />
             <path id="edge-0-20" d="M70 328L185 451" stroke="black" stroke-width="2" />
-            <path id="edge-0-30" d="M81 299L356 200" stroke="black" stroke-width="2" />
             <path id="edge-10-30" d="M260 174.109L349 173.991" stroke="black" stroke-width="2" />
             <path id="edge-20-40" d="M233 447L330 346" stroke="black" stroke-width="2" />
             <path id="edge-40-60" d="M393 318L555 323" stroke="black" stroke-width="2" />
@@ -14,12 +13,14 @@ const SvgComponent = () => (
             <path id="edge-60-80" d="M604 296L643 207" stroke="black" stroke-width="2" />
             <path id="edge-70-90" d="M789 461L825 354" stroke="black" stroke-width="2" />
             <path id="edge-30-80" d="M617 173L429 174" stroke="black" stroke-width="2" />
+
             {/*Inicio Nodo 0*/}
             <g id="Nodo0">
                 <g id="Early_10">
-                    <mask id="path-86-inside-37_41_2" fill="white">
+                    <mask id="path-86-inside-37_41_2" fill="#fff">
                         <path d="M16.9835 328.017C13.5013 324.534 10.7391 320.4 8.85452 315.851C6.96997 311.301 6 306.425 6 301.5C6 296.575 6.96997 291.699 8.85452 287.149C10.7391 282.6 13.5013 278.466 16.9835 274.983L43.5 301.5L16.9835 328.017Z" />
                     </mask>
+                    
                     <path
                         d="M16.9835 328.017C13.5013 324.534 10.7391 320.4 8.85452 315.851C6.96997 311.301 6 306.425 6 301.5C6 296.575 6.96997 291.699 8.85452 287.149C10.7391 282.6 13.5013 278.466 16.9835 274.983L43.5 301.5L16.9835 328.017Z"
                         fill="#D9D9D9"
@@ -35,6 +36,7 @@ const SvgComponent = () => (
                         fontSize="10"
                         fill="black"
                     >
+                        {/**Aqui se debe traer el tiempo early desde el backend */}
                         0
                     </text>
                 </g>
@@ -110,6 +112,10 @@ const SvgComponent = () => (
             </g>
 
             {/*Fin Nodo 0*/}
+            {/*Linea de union de nodos*/}
+            
+
+
             {/*Inicio Nodo 10*/}
             <g id="Nodo10">
                 <g id="EF_7">
@@ -1118,19 +1124,6 @@ const SvgComponent = () => (
             </g>
 
             {/*Fin Nodo 90*/}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         </g>
     </svg>

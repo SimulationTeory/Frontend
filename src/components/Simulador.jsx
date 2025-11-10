@@ -28,8 +28,8 @@ const Simulador = () => {
             </Row>
 
             {/* Área central */}
-            <Row className="flex-grow-1 w-100 justify-content-center align-items-center">
-                <Col xs={10} md={9} lg={8}>
+            <Row className="flex-grow-1  justify-content-center align-items-center">
+                <Col xs={16} md={14} lg={12}>
                     <AreaLogica />
                 </Col>
             </Row>
