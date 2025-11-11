@@ -1,17 +1,28 @@
-import React from "react";
-import { Col, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Col, Button, Spinner } from "react-bootstrap";
 
-const BotonesInferiores = () => {
+const BotonesInferiores = ({ onCorrerSimulacion }) => {
+    const [loading, setLoading] = useState(false);
+
+    const handleCorrer = async () => {
+        setLoading(true);
+        try {
+            await onCorrerSimulacion();
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const botones = [
-        "Correr Simulación",
-        "Guardar Simulación",
-        "Comparar Simulaciones",
-        "Exportar a PDF",
+        { texto: "Correr Simulación", action: handleCorrer },
+        { texto: "Guardar Simulación", action: () => alert("Función guardar pendiente") },
+        { texto: "Comparar Simulaciones", action: () => alert("Función comparar pendiente") },
+        { texto: "Exportar a PDF", action: () => alert("Función exportar pendiente") },
     ];
 
     return (
         <>
-            {botones.map((texto, index) => (
+            {botones.map((btn, index) => (
                 <Col key={index} xs="auto">
                     <Button
                         variant="light"
@@ -21,8 +32,14 @@ const BotonesInferiores = () => {
                             margin: "0 10px",
                             padding: "0.5rem 1.2rem",
                         }}
+                        onClick={btn.action}
+                        disabled={btn.texto === "Correr Simulación" && loading}
                     >
-                        {texto}
+                        {btn.texto === "Correr Simulación" && loading ? (
+                            <Spinner animation="border" size="sm" />
+                        ) : (
+                            btn.texto
+                        )}
                     </Button>
                 </Col>
             ))}

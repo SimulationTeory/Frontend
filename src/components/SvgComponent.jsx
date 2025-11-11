@@ -1,8 +1,11 @@
+import React from "react";
+
 const stroke_color = "#000";
 const stroke_width = "";
 
-const nodes = [
-  {
+
+const baseNodes = [
+{
     id: 0,
     early: 0,
     latest: 0,
@@ -206,48 +209,75 @@ const nodes = [
   },
 ];
 
-const SvgComponent = () => (
-  <svg width="900" height="600" viewBox="0 0 900 600" fill="none">
-    {/* Edges */}
-    <path id="edge-0-10" d="M70 273L182 186" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-0-20" d="M70 328L185 451" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-0-30" d="M81 299L356 200" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-10-30" d="M260 174.109L349 173.991" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-20-40" d="M233 447L330 346" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-40-60" d="M393 318L555 323" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-20-50" d="M248 482L485 487" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-50-70" d="M563 491L735 493" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-80-90" d="M689 199L799 289" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-20-60" d="M248 468L563 351" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-60-80" d="M604 296L643 207" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-70-90" d="M789 461L825 354" stroke={stroke_color} strokeWidth={stroke_width} />
-    <path id="edge-30-80" d="M617 173L429 174" stroke={stroke_color} strokeWidth={stroke_width} />
+const edges = [
+  { id: "edge-0-10", d: "M70 273L182 186" },
+  { id: "edge-0-20", d: "M70 328L185 451" },
+  { id: "edge-0-30", d: "M81 299L356 200" },
+  { id: "edge-10-30", d: "M260 174.109L349 173.991" },
+  { id: "edge-20-40", d: "M233 447L330 346" },
+  { id: "edge-40-60", d: "M393 318L555 323" },
+  { id: "edge-20-50", d: "M248 482L485 487" },
+  { id: "edge-50-70", d: "M563 491L735 493" },
+  { id: "edge-80-90", d: "M689 199L799 289" },
+  { id: "edge-20-60", d: "M248 468L563 351" },
+  { id: "edge-60-80", d: "M604 296L643 207" },
+  { id: "edge-70-90", d: "M789 461L825 354" },
+  { id: "edge-30-80", d: "M617 173L429 174" },
+];
 
-    {/* Nodos */}
-    {nodes.map((node) => (
-      <g key={node.id} id={`Nodo${node.id}`}>
-        {["early", "latest", "slack", "name"].map((type) => (
-          <g key={type} id={`${type}_${node.id}`}>
-            <mask id={`mask-${type}-${node.id}`} fill="white">
-              <path d={node.paths[type]} />
-            </mask>
-            <path d={node.paths[type]} fill="#D9D9D9" stroke="black" mask={`url(#mask-${type}-${node.id})`} />
-            <text
-              x={node.textPos[type].x}
-              y={node.textPos[type].y}
-              textAnchor="middle"
-              alignmentBaseline="middle"
-              fontSize={type === "name" ? 11 : 10}
-              fontWeight={type === "name" ? "bold" : "normal"}
-              fill="black"
-            >
-              {node[type]}
-            </text>
-          </g>
-        ))}
-      </g>
-    ))}
-  </svg>
-);
+const SvgComponent = ({ simData }) => {
+
+  const updatedNodes = baseNodes.map((node) => {
+    const match = simData?.nodesData?.find((n) => n.id === node.id);
+    return match
+      ? { ...node, early: match.early, latest: match.latest, slack: match.slack }
+      : node;
+  });
+
+  return (
+    <svg width="900" height="600" viewBox="0 0 900 600" fill="none">
+      {/* Rutas */}
+      {edges.map((edge) => (
+        <path
+          key={edge.id}
+          id={edge.id}
+          d={edge.d}
+          stroke={stroke_color}
+          strokeWidth={stroke_width}
+        />
+      ))}
+
+      {/* Nodos */}
+      {updatedNodes.map((node) => (
+        <g key={node.id} id={`Nodo${node.id}`}>
+          {["early", "latest", "slack", "name"].map((type) => (
+            <g key={type} id={`${type}_${node.id}`}>
+              <mask id={`mask-${type}-${node.id}`} fill="white">
+                <path d={node.paths[type]} />
+              </mask>
+              <path
+                d={node.paths[type]}
+                fill="#D9D9D9"
+                stroke="black"
+                mask={`url(#mask-${type}-${node.id})`}
+              />
+              <text
+                x={node.textPos[type].x}
+                y={node.textPos[type].y}
+                textAnchor="middle"
+                alignmentBaseline="middle"
+                fontSize={type === "name" ? 11 : 10}
+                fontWeight={type === "name" ? "bold" : "normal"}
+                fill="black"
+              >
+                {node[type]}
+              </text>
+            </g>
+          ))}
+        </g>
+      ))}
+    </svg>
+  );
+};
 
 export default SvgComponent;
