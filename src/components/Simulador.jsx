@@ -3,26 +3,38 @@ import { Container, Row, Col } from "react-bootstrap";
 import EntradaButton from "./EntradaButton";
 import AreaLogica from "./AreaLogica";
 import BotonesInferiores from "./BotonesInferiores";
+import TablaDatosEntrada from "./TablaDatosEntrada";
 import axios from "axios";
 
 const Simulador = () => {
-    const [simData, setSimData] = useState(null); 
-    const [loading, setLoading] = useState(false); 
+    const [simData, setSimData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [modalShow, setModalShow] = useState(false);
+    const [entradaData, setEntradaData] = useState(null);
+
+
+    const handleOpenModal = () => setModalShow(true);
+    const handleCloseModal = () => setModalShow(false);
+
+
+    const handleEnviarDatos = (data) => {
+        setEntradaData(data);
+    };
+
 
     const correrSimulacion = async () => {
+        if (!entradaData) {
+            alert("Primero debes seleccionar los Datos de Entrada");
+            return;
+        }
+
         setLoading(true);
         try {
-            const nodes = [
-                "0−20", "20−40", "40−60", "20−50", "50−70", "70−90",
-                "0−10", "10−30", "30−80", "0−30", "20−60", "60−80", "80−90"
-            ];
 
-            const res = await axios.post("http://localhost:8000/api/simulacion/", {
-                nodes,
-                tiempo_op: [4, 2, 3, 1, 1, 4, 1, 4, 4, 9, 5, 4, 3],
-                tiempo_es: [5.5, 4, 6, 2, 4, 10, 2, 10.5, 6, 13, 9, 5.5, 5.5],
-                tiempo_pe: [10, 6, 15, 3, 7, 16, 3, 14, 8, 17, 13, 10, 11],
-            });
+            const res = await axios.post(
+                "http://localhost:8000/api/simulacion/",
+                entradaData
+            );
 
             setSimData(res.data);
         } catch (err) {
@@ -32,6 +44,7 @@ const Simulador = () => {
             setLoading(false);
         }
     };
+
 
     return (
         <Container
@@ -51,9 +64,16 @@ const Simulador = () => {
             {/* Botón superior */}
             <Row className="w-100 mt-3">
                 <Col xs="auto">
-                    <EntradaButton />
+                    <EntradaButton onClick={handleOpenModal} />
                 </Col>
             </Row>
+
+            {/* Modal de datos de entrada */}
+            <TablaDatosEntrada
+                show={modalShow}
+                handleClose={handleCloseModal}
+                onEnviarDatos={handleEnviarDatos}
+            />
 
             {/* Área central */}
             <Row className="flex-grow-1 justify-content-center align-items-center">
@@ -66,7 +86,7 @@ const Simulador = () => {
             <Row className="mb-4 w-100 justify-content-center">
                 <BotonesInferiores
                     onCorrerSimulacion={correrSimulacion}
-                    loading={loading} 
+                    loading={loading}
                 />
             </Row>
         </Container>
