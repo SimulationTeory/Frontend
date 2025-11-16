@@ -61,7 +61,6 @@ const Simulador = () => {
     };
 
     const handleComparar = (data) => {
-
         setSimulacionComparar(data);
     };
 
@@ -94,14 +93,45 @@ const Simulador = () => {
                 onComparar={handleComparar}
             />
 
-            <Row className="flex-grow-1 justify-content-center align-items-center w-100">
-                <Col xs={16} md={14} lg={12}>
-                    <AreaLogica
-                        data={simulacionData}
-                        simDataComparar={simulacionComparar}
-                    />
-                </Col>
-            </Row>
+            <div id="exportar-simulacion" className="flex-grow-1 w-100">
+                <Row className="flex-grow-1 justify-content-center align-items-center w-100">
+                    <Col xs={16} md={14} lg={12}>
+                        <AreaLogica
+                            data={simulacionData}
+                            simDataComparar={simulacionComparar}
+                        />
+                    </Col>
+                </Row>
+
+
+                {entradaData && (
+                    <div style={{ marginTop: "20px" }}>
+                        <h5>Datos de Entrada</h5>
+                        <table border="1" cellPadding="4" style={{ borderCollapse: "collapse", width: "100%" }}>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Actividad</th>
+                                    <th>Optimista</th>
+                                    <th>Probable</th>
+                                    <th>Pesimista</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {entradaData.nodes.map((nodo, i) => (
+                                    <tr key={i}>
+                                        <td>{i + 1}</td>
+                                        <td>{nodo}</td>
+                                        <td>{entradaData.tiempo_op[i]}</td>
+                                        <td>{entradaData.tiempo_es[i]}</td>
+                                        <td>{entradaData.tiempo_pe[i]}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
 
             <Row className="mb-4 w-100 justify-content-center">
                 <BotonesInferiores
@@ -111,6 +141,7 @@ const Simulador = () => {
                 />
             </Row>
         </Container>
+
     );
 };
 

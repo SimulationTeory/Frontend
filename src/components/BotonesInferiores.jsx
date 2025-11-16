@@ -67,8 +67,6 @@ const BotonesInferiores = ({
       nodesB: limpiarNodos(simulacionData.nodesB),
     };
 
-    console.log("PAYLOAD A ENVIAR:", payload);
-
     setLoading(true);
     try {
       const res = await saveSimulacion(payload);
@@ -81,11 +79,40 @@ const BotonesInferiores = ({
     }
   };
 
+  const handleExportar = () => {
+    const exportDiv = document.getElementById("exportar-simulacion");
+    if (!exportDiv) {
+      return alert("No hay contenido para exportar. Asegúrate de que la simulación y la tabla estén visibles.");
+    }
+
+    const ventana = window.open("", "_blank");
+    ventana.document.write(`
+      <html>
+        <head>
+          <title>Exportar Simulación</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+            th, td { border: 1px solid black; padding: 4px; text-align: left; }
+            h4, h5, h6 { margin: 8px 0; }
+          </style>
+        </head>
+        <body>
+          ${exportDiv.outerHTML}
+        </body>
+      </html>
+    `);
+    ventana.document.close();
+    ventana.focus();
+    ventana.print();
+    ventana.close();
+  };
+
   const botones = [
     { texto: "Correr Simulación", action: handleCorrer },
     { texto: "Guardar Simulación", action: handleGuardarSimulacion },
     { texto: "Comparar Simulaciones", action: onCompararSimulaciones },
-    { texto: "Exportar a PDF", action: () => alert("Función exportar pendiente") },
+    { texto: "Exportar a PDF", action: handleExportar },
   ];
 
   return (
