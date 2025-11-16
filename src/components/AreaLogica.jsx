@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { Card, Button, ButtonGroup } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import SvgComponent from "./SvgComponent";
 
+const AreaLogica = ({ data, simDataComparar }) => {
+  const [vista, setVista] = useState("PERT");
 
-const AreaLogica = ({ data }) => {
-  const [vista, setVista] = useState("PERT"); 
 
-  if (!data) {
+  const finalData = simDataComparar ? simDataComparar : data;
+
+
+  if (!finalData) {
     return (
       <p style={{ textAlign: "center", marginTop: "2rem" }}>
         Presiona "Correr Simulación" para ver los diagramas.
@@ -14,62 +17,66 @@ const AreaLogica = ({ data }) => {
     );
   }
 
+
+  const isComparacion = Array.isArray(finalData) && finalData.length === 2;
+
+
+  const simulaciones = isComparacion ? finalData : [finalData];
+
   return (
-    <div className="d-flex flex-column align-items-center">
-      {/* Botones de pestañas */}
-      
-
+    <div className="d-flex flex-column align-items-center w-100">
       {vista === "PERT" ? (
-        <>
-          {/* Diagrama Path A */}
-          <Card
-            style={{
-              width: "90%",
-              margin: "1rem 0",
-              borderRadius: "10px",
-              padding: "1rem",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-            }}
-          >
-            <Card.Body>
-              <h5 className="text-center">Path A</h5>
-              <SvgComponent
-                simData={{
-                  nodesData: data.nodesA,
-                  pathData: data.pathA,
-                  tiemposPert: data.tiemposPert_A 
+        <Row className="w-100">
+          {simulaciones.map((sim, idx) => (
+            <Col key={idx} md={isComparacion ? 6 : 12}>
+              <Card
+                style={{
+                  width: "100%",
+                  margin: "1rem 0",
+                  borderRadius: "10px",
+                  padding: "1rem",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 }}
-              />
-            </Card.Body>
-          </Card>
+              >
+                <Card.Body>
+                  {isComparacion && (
+                    <h4 className="text-center mb-3">
+                      Simulación {idx + 1}
+                    </h4>
+                  )}
 
-          {/* Diagrama Path B */}
-          <Card
-            style={{
-              width: "90%",
-              margin: "1rem 0",
-              borderRadius: "10px",
-              padding: "1rem",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-            }}
-          >
-            <Card.Body>
-              <h5 className="text-center">Path B</h5>
-              <SvgComponent
-                simData={{
-                  nodesData: data.nodesB,
-                  pathData: data.pathB,
-                  tiemposPert: data.tiemposPert_B 
-                }}
-              />
-            </Card.Body>
-          </Card>
-        </>
+                  {/* PATH A */}
+                  <h5 className="text-center">Path A</h5>
+                  <SvgComponent
+                    simData={{
+                      nodesData: sim.nodesA,
+                      pathData: sim.pathA,
+                      tiemposPert: sim.tiemposPert_A,
+                    }}
+                  />
+
+                  {/* PATH B */}
+                  <h5 className="text-center mt-4">Path B</h5>
+                  <SvgComponent
+                    simData={{
+                      nodesData: sim.nodesB,
+                      pathData: sim.pathB,
+                      tiemposPert: sim.tiemposPert_B,
+                    }}
+                  />
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
       ) : (
-        <>
-          {/* Diagrama Gantt */}
-          <SvgGantt simData={data} />
-        </>
+        <Row className="w-100">
+          {simulaciones.map((sim, idx) => (
+            <Col key={idx} md={isComparacion ? 6 : 12}>
+              <SvgGantt simData={sim} />
+            </Col>
+          ))}
+        </Row>
       )}
     </div>
   );

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Table, Form, Spinner } from "react-bootstrap";
-import axios from "axios";
 
 const nodosFijos = [
     { nodo: "0−20", descripcion: "Organizar oficina de ventas" },
@@ -24,26 +23,24 @@ const TablaDatosEntrada = ({ show, handleClose, onEnviarDatos }) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
 
-
     useEffect(() => {
         if (show) {
-            axios.post("http://localhost:8000/api/datosTabla/Tiempos")
-                .then(res => setMuestras(res.data))
+            fetch("http://localhost:8000/api/datosTabla/Tiempos", { method: "POST" })
+                .then(res => res.json())
+                .then(json => setMuestras(json))
                 .catch(err => console.error(err));
         }
     }, [show]);
-
 
     const handleSelectId = async (id) => {
         setSelectedId(id);
         setLoading(true);
         try {
-            const res = await axios.post(
-                "http://localhost:8000/api/datosTabla/dataTiempos",
-                null,
-                { params: { id: Number(id) } }
-            );
-            setData(res.data);
+            const res = await fetch(`http://localhost:8000/api/datosTabla/dataTiempos?id=${id}`, {
+                method: "POST"
+            });
+            const json = await res.json();
+            setData(json);
         } catch (err) {
             console.error(err);
         } finally {
@@ -51,10 +48,10 @@ const TablaDatosEntrada = ({ show, handleClose, onEnviarDatos }) => {
         }
     };
 
-
     const handleEnviar = () => {
-        if (data) {
+        if (data && selectedId) {
             const payload = {
+                id_tiempos: selectedId,  
                 nodes: nodosFijos.map(n => n.nodo),
                 tiempo_op: data.Tiempo_optimitsa,
                 tiempo_es: data.Tiempo_probable,
@@ -116,7 +113,7 @@ const TablaDatosEntrada = ({ show, handleClose, onEnviarDatos }) => {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
-                <Button variant="primary" onClick={handleEnviar} disabled={!data}>
+                <Button variant="primary" onClick={handleEnviar} disabled={!data || !selectedId}>
                     Enviar datos a simular
                 </Button>
             </Modal.Footer>

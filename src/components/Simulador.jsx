@@ -4,25 +4,29 @@ import EntradaButton from "./EntradaButton";
 import AreaLogica from "./AreaLogica";
 import BotonesInferiores from "./BotonesInferiores";
 import TablaDatosEntrada from "./TablaDatosEntrada";
-import axios from "axios";
+import CompararSimulacionesModal from "./CompararSimulacionesModal";
+import { correrSimulacion } from "../api/simulacionService";
 
 const Simulador = () => {
-    const [simData, setSimData] = useState(null);
+    const [simulacionData, setSimulacionData] = useState(null);
+    const [simulacionComparar, setSimulacionComparar] = useState(null);
     const [loading, setLoading] = useState(false);
     const [modalShow, setModalShow] = useState(false);
+    const [modalCompararShow, setModalCompararShow] = useState(false);
     const [entradaData, setEntradaData] = useState(null);
-
+    const [idTiempos, setIdTiempos] = useState(null);
 
     const handleOpenModal = () => setModalShow(true);
     const handleCloseModal = () => setModalShow(false);
+    const handleOpenComparar = () => setModalCompararShow(true);
+    const handleCloseComparar = () => setModalCompararShow(false);
 
-
-    const handleEnviarDatos = (data) => {
-        setEntradaData(data);
+    const handleEnviarDatos = (payload) => {
+        setEntradaData(payload);
+        setIdTiempos(payload.id_tiempos);
     };
 
-
-    const correrSimulacion = async () => {
+    const handleCorrerSimulacion = async () => {
         if (!entradaData) {
             alert("Primero debes seleccionar los Datos de Entrada");
             return;
@@ -30,13 +34,24 @@ const Simulador = () => {
 
         setLoading(true);
         try {
-
-            const res = await axios.post(
-                "http://localhost:8000/api/simulacion/",
-                entradaData
-            );
-
-            setSimData(res.data);
+            const res = await correrSimulacion(entradaData);
+            setSimulacionData({
+                ...res,
+                id_tiempos: idTiempos,
+                SemanasC1: res.SemanasC1 || 0,
+                SemanasC2: res.SemanasC2 || 0,
+                rutaCriticaA: res.rutaCriticaA || [],
+                rutaCriticaB: res.rutaCriticaB || [],
+                varianza_total: res.varianza_total || 0,
+                probabilidad: res.probabilidad || 0,
+                actividadesA: res.actividadesA || [],
+                actividadesB: res.actividadesB || [],
+                nodesA: res.nodesA || [],
+                nodesB: res.nodesB || [],
+                tiemposPert_A: res.tiemposPert_A || {},
+                tiemposPert_B: res.tiemposPert_B || {},
+            });
+            setSimulacionComparar(null);
         } catch (err) {
             console.error("Error al correr la simulación:", err.response?.data || err.message);
             alert("Ocurrió un error al correr la simulación. Revisa la consola.");
@@ -45,6 +60,10 @@ const Simulador = () => {
         }
     };
 
+    const handleComparar = (data) => {
+
+        setSimulacionComparar(data);
+    };
 
     return (
         <Container
@@ -55,38 +74,40 @@ const Simulador = () => {
                 borderRadius: "40px",
                 height: "100%",
                 width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                alignItems: "center",
             }}
         >
-            {/* Botón superior */}
             <Row className="w-100 mt-3">
                 <Col xs="auto">
                     <EntradaButton onClick={handleOpenModal} />
                 </Col>
             </Row>
 
-            {/* Modal de datos de entrada */}
             <TablaDatosEntrada
                 show={modalShow}
                 handleClose={handleCloseModal}
                 onEnviarDatos={handleEnviarDatos}
             />
 
-            {/* Área central */}
-            <Row className="flex-grow-1 justify-content-center align-items-center">
+            <CompararSimulacionesModal
+                show={modalCompararShow}
+                handleClose={handleCloseComparar}
+                onComparar={handleComparar}
+            />
+
+            <Row className="flex-grow-1 justify-content-center align-items-center w-100">
                 <Col xs={16} md={14} lg={12}>
-                    <AreaLogica data={simData} />
+                    <AreaLogica
+                        data={simulacionData}
+                        simDataComparar={simulacionComparar}
+                    />
                 </Col>
             </Row>
 
-            {/* Botones inferiores */}
             <Row className="mb-4 w-100 justify-content-center">
                 <BotonesInferiores
-                    onCorrerSimulacion={correrSimulacion}
-                    loading={loading}
+                    onCorrerSimulacion={handleCorrerSimulacion}
+                    simulacionData={simulacionData}
+                    onCompararSimulaciones={handleOpenComparar}
                 />
             </Row>
         </Container>
