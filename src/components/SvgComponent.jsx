@@ -240,7 +240,7 @@ const SvgComponent = ({ simData }) => {
 
 
 
-  // Crear un set con los edges críticos para pintarlos en rojo
+
   const criticalEdges = new Set(simData?.pathData?.map((e) => `edge-${e}`));
 
 
@@ -295,7 +295,7 @@ const SvgComponent = ({ simData }) => {
             let fillColor = "#D9D9D9"; 
             if (type === "early") fillColor = "#B3E5FC";
             if (type === "latest") fillColor = "#FFC107";
-            if (type === "slack") fillColor = "#f70d0dff";
+            if (type === "slack") fillColor = "#f70d0da2";
 
             return (
               <g key={type} id={`${type}_${node.id}`}>
