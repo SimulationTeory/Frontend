@@ -32,10 +32,21 @@ const CompararSimulacionesModal = ({ show, handleClose, onComparar }) => {
 
     setLoading(true);
     try {
-      // Enviamos IDs como números (correcto)
+
       const result = await dataSimulaciones(Number(s1), Number(s2));
 
-      onComparar(result);
+
+      const sim1Meta = simulaciones.find((s) => s.id === Number(s1));
+      const sim2Meta = simulaciones.find((s) => s.id === Number(s2));
+
+      const simConNombre = [
+        { ...result[0], nombre: sim1Meta?.nombre || "Simulación 1" },
+        { ...result[1], nombre: sim2Meta?.nombre || "Simulación 2" },
+      ];
+
+
+      onComparar(simConNombre);
+
       handleClose();
     } catch (err) {
       console.error("Error al obtener los datos de simulaciones:", err);
@@ -44,6 +55,7 @@ const CompararSimulacionesModal = ({ show, handleClose, onComparar }) => {
       setLoading(false);
     }
   };
+
 
   return (
     <Modal show={show} onHide={handleClose} size="lg" centered>
