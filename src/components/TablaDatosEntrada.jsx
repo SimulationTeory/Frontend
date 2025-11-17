@@ -51,8 +51,9 @@ const TablaDatosEntrada = ({ show, handleClose, onEnviarDatos }) => {
     const handleEnviar = () => {
         if (data && selectedId) {
             const payload = {
-                id_tiempos: selectedId,  
+                id_tiempos: selectedId,
                 nodes: nodosFijos.map(n => n.nodo),
+                actividades: nodosFijos.map(n => n.descripcion),
                 tiempo_op: data.Tiempo_optimitsa,
                 tiempo_es: data.Tiempo_probable,
                 tiempo_pe: data.Tiempo_pesimista
@@ -61,6 +62,7 @@ const TablaDatosEntrada = ({ show, handleClose, onEnviarDatos }) => {
             handleClose();
         }
     };
+
 
     return (
         <Modal show={show} onHide={handleClose} size="lg" centered>

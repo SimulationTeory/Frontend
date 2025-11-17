@@ -103,12 +103,19 @@ const Simulador = () => {
                     </Col>
                 </Row>
 
-
                 {entradaData && (
                     <div style={{ marginTop: "20px" }}>
                         <h5>Datos de Entrada</h5>
-                        <table border="1" cellPadding="4" style={{ borderCollapse: "collapse", width: "100%" }}>
-                            <thead>
+                        <table
+                            border="1"
+                            cellPadding="8"
+                            style={{
+                                borderCollapse: "collapse",
+                                width: "100%",
+                                textAlign: "center",
+                            }}
+                        >
+                            <thead style={{ backgroundColor: "#f0f0f0" }}>
                                 <tr>
                                     <th>ID</th>
                                     <th>Actividad</th>
@@ -121,7 +128,7 @@ const Simulador = () => {
                                 {entradaData.nodes.map((nodo, i) => (
                                     <tr key={i}>
                                         <td>{i + 1}</td>
-                                        <td>{nodo}</td>
+                                        <td style={{ textAlign: "left" }}>{entradaData.actividades[i]}</td>
                                         <td>{entradaData.tiempo_op[i]}</td>
                                         <td>{entradaData.tiempo_es[i]}</td>
                                         <td>{entradaData.tiempo_pe[i]}</td>
@@ -132,6 +139,7 @@ const Simulador = () => {
                     </div>
                 )}
             </div>
+
 
             <Row className="mb-4 w-100 justify-content-center">
                 <BotonesInferiores
