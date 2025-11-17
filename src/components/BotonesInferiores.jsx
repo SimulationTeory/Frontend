@@ -31,26 +31,29 @@ const BotonesInferiores = ({
     }
 
     const limpiarNodos = (nodes) =>
-      (nodes || []).map((n, idx) => ({
-        nodo: n.nodo ?? idx * 10,
-        early: n.early ?? 0,
-        late: n.late ?? n.early ?? 0,
-        holgura: n.holgura ?? 0,
-        critical: Boolean(n.critical),
-      }));
+  (nodes || []).map((n, idx) => ({
+    nodo: n.nodo ?? n.id ?? idx * 10,
+    early: n.early ?? 0,
+    late: n.latest ?? n.early ?? 0,
+    holgura: n.holgura ?? 0,
+    critical: Boolean(n.critical),
+  }));
+
 
     const generarActividades = (tiemposPert, nodes) => {
-      if (Array.isArray(tiemposPert) && tiemposPert.length > 0) {
-        return tiemposPert.map((te, idx) => ({
-          id_detalle: idx + 1,
-          te: te ?? 0,
-        }));
-      }
-      return (nodes || []).map((n, idx) => ({
-        id_detalle: idx + 1,
-        te: n.early ?? 0,
-      }));
-    };
+
+  if (tiemposPert && Object.keys(tiemposPert).length > 0) {
+    return Object.keys(tiemposPert).map((nodo, idx) => ({
+      id_detalle: idx + 1,
+      te: tiemposPert[nodo] ?? 0,
+    }));
+  }
+  return (nodes || []).map((n, idx) => ({
+    id_detalle: idx + 1,
+    te: n.early ?? 0,
+  }));
+};
+
 
     const payload = {
       id_tiempos: simulacionData.id_tiempos ?? 0,
@@ -82,7 +85,7 @@ const BotonesInferiores = ({
 
 
 
-    //console.log(JSON.stringify(payload, null, 4)); 
+    console.log(JSON.stringify(payload, null, 4)); 
 
 
     setLoading(true);
