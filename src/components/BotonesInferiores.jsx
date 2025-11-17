@@ -53,23 +53,42 @@ const BotonesInferiores = ({
     };
 
     const payload = {
-      id_tiempos: simulacionData.id_tiempos,
+      id_tiempos: simulacionData.id_tiempos ?? 0,
       nombre,
       SemanasC1: simulacionData.SemanasC1 ?? 0,
       SemanasC2: simulacionData.SemanasC2 ?? 0,
-      rutaCriticaA: simulacionData.rutaCriticaA || [],
-      rutaCriticaB: simulacionData.rutaCriticaB || [],
-      varianza_total: simulacionData.varianza_total ?? 0,
+
+
+      rutaCriticaA: simulacionData.pathA || [],
+      rutaCriticaB: simulacionData.pathB || [],
+
+      varianza_total: simulacionData.varianza ?? 0,
       probabilidad: simulacionData.probabilidad ?? 0,
-      actividadesA: generarActividades(simulacionData.tiemposPert_A, simulacionData.nodesA),
-      actividadesB: generarActividades(simulacionData.tiemposPert_B, simulacionData.nodesB),
+
+      actividadesA: generarActividades(
+        simulacionData.tiemposPert_A,
+        simulacionData.nodesA
+      ),
+
+      actividadesB: generarActividades(
+        simulacionData.tiemposPert_B,
+        simulacionData.nodesB
+      ),
+
       nodesA: limpiarNodos(simulacionData.nodesA),
       nodesB: limpiarNodos(simulacionData.nodesB),
     };
 
+
+
+
+    //console.log(JSON.stringify(payload, null, 4)); 
+
+
     setLoading(true);
     try {
       const res = await saveSimulacion(payload);
+      console.log("Respuesta del backend:", res);
       alert(`Simulación guardada con éxito. ID: ${res.id_simulacion || "desconocido"}`);
     } catch (err) {
       console.error("Error al guardar simulación:", err.response?.data || err.message);
@@ -78,6 +97,8 @@ const BotonesInferiores = ({
       setLoading(false);
     }
   };
+
+
 
   const handleExportar = () => {
     const exportDiv = document.getElementById("exportar-simulacion");

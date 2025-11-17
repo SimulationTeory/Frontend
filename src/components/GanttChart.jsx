@@ -32,29 +32,28 @@ const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
     return actividadesPERT.map((act, index) => {
       const [ini] = act.edge.split("-").map(Number);
       const nodoInicio = nodos.find(n => n.id === ini);
-
       const early = nodoInicio?.early ?? 0;
 
-      let dur = Number(tiempos[act.edge] ?? 1);
-      if (dur <= 0) dur = 1;
+      let durSemanas = Number(tiempos[act.edge] ?? 1);
+      if (durSemanas <= 0) durSemanas = 1;
 
       const inicioFecha = new Date(fechaBase);
       inicioFecha.setDate(inicioFecha.getDate() + early * 7);
 
       const finFecha = new Date(inicioFecha);
-      finFecha.setDate(inicioFecha.getDate() + dur * 7);
+      finFecha.setDate(inicioFecha.getDate() + durSemanas * 7);
 
       const esCritica = pathReal.includes(act.edge);
 
       return [
-        `${keyPrefix}A${index}`,
-        act.desc,
-        esCritica ? "critic" : "normal",
-        inicioFecha,
-        finFecha,
-        null,
-        0,
-        null
+        `${keyPrefix}A${index}`, 
+        act.desc,                
+        esCritica ? "critic" : "normal", 
+        inicioFecha,             
+        finFecha,                
+        durSemanas,             
+        0,                       
+        null                     
       ];
     });
   };
@@ -86,7 +85,7 @@ const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
       dt.addColumn("string", "Resource");
       dt.addColumn("date", "Start Date");
       dt.addColumn("date", "End Date");
-      dt.addColumn("number", "Duration");
+      dt.addColumn("number", "Duration"); 
       dt.addColumn("number", "Percent Complete");
       dt.addColumn("string", "Dependencies");
 
@@ -136,7 +135,7 @@ const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
             marginBottom: "5px"
           }}
         >
-          {Array.from({ length: 40 }).map((_, i) => (
+          {Array.from({ length:19 }).map((_, i) => (
             <div key={i}>{i}</div>
           ))}
         </div>
