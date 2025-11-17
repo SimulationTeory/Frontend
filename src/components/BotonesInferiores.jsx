@@ -100,34 +100,59 @@ const BotonesInferiores = ({
 
 
 
-  const handleExportar = () => {
-    const exportDiv = document.getElementById("exportar-simulacion");
-    if (!exportDiv) {
-      return alert("No hay contenido para exportar. Asegúrate de que la simulación y la tabla estén visibles.");
-    }
+const handleExportar = () => {
+  const exportDiv = document.getElementById("exportar-simulacion");
+  if (!exportDiv) {
+    return alert(
+      "No hay contenido para exportar. Asegúrate de que la simulación y la tabla estén visibles."
+    );
+  }
 
-    const ventana = window.open("", "_blank");
-    ventana.document.write(`
-      <html>
-        <head>
-          <title>Exportar Simulación</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
-            th, td { border: 1px solid black; padding: 4px; text-align: left; }
-            h4, h5, h6 { margin: 8px 0; }
-          </style>
-        </head>
-        <body>
-          ${exportDiv.outerHTML}
-        </body>
-      </html>
-    `);
-    ventana.document.close();
-    ventana.focus();
-    ventana.print();
-    ventana.close();
-  };
+  
+  const clone = exportDiv.cloneNode(true);
+
+ 
+  clone.style.width = "100%";
+  clone.style.maxWidth = "100%";
+  clone.style.overflow = "hidden";
+
+  const ventana = window.open("", "_blank");
+  ventana.document.write(`
+    <html>
+      <head>
+        <title>Exportar Simulación</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 10px; margin: 0; }
+          table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+          th, td { border: 1px solid black; padding: 4px; text-align: left; }
+          h4, h5, h6 { margin: 8px 0; }
+
+          /* Ajuste dinámico para imprimir Gantt */
+          #exportar-simulacion-clone {
+            width: 100% !important;
+            max-width: 100%;
+            overflow: hidden !important;
+            transform: scale(0.95);
+            transform-origin: top left;
+          }
+
+          @media print {
+            body { margin: 0; padding: 0; }
+            #exportar-simulacion-clone { transform: scale(0.95); }
+          }
+        </style>
+      </head>
+      <body>
+        <div id="exportar-simulacion-clone">${clone.outerHTML}</div>
+      </body>
+    </html>
+  `);
+  ventana.document.close();
+  ventana.focus();
+  ventana.print();
+  ventana.close();
+};
+
 
   const botones = [
     { texto: "Correr Simulación", action: handleCorrer },

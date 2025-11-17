@@ -16,8 +16,9 @@ const actividadesPERT = [
   { edge: "80-90", desc: "Expedir stocks a distribuidores" }
 ];
 
-const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
+const GanttChart = ({ simData, path = "A", keyPrefix = "" }) => {
   const chartRef = useRef(null);
+  const containerRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
 
   const transformData = () => {
@@ -46,16 +47,23 @@ const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
       const esCritica = pathReal.includes(act.edge);
 
       return [
-        `${keyPrefix}A${index}`, 
-        act.desc,                
-        esCritica ? "critic" : "normal", 
-        inicioFecha,             
-        finFecha,                
-        durSemanas,             
-        0,                       
-        null                     
+        `${keyPrefix}A${index}`,
+        act.desc,
+        esCritica ? "critic" : "normal",
+        inicioFecha,
+        finFecha,
+        durSemanas,
+        0,
+        null
       ];
     });
+  };
+
+  const totalSemanas = () => {
+    if (!simData) return 0;
+    const nodos = path === "A" ? simData.nodesA : simData.nodesB;
+    if (!nodos.length) return 0;
+    return Math.max(...nodos.map(n => n.early));
   };
 
   useEffect(() => {
@@ -85,7 +93,7 @@ const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
       dt.addColumn("string", "Resource");
       dt.addColumn("date", "Start Date");
       dt.addColumn("date", "End Date");
-      dt.addColumn("number", "Duration"); 
+      dt.addColumn("number", "Duration");
       dt.addColumn("number", "Percent Complete");
       dt.addColumn("string", "Dependencies");
 
@@ -111,10 +119,19 @@ const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
     };
 
     load();
+
+    
+    const handleResize = () => {
+      draw();
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [simData, path]);
 
+  const semanasTotales = totalSemanas();
+
   return (
-    <div>
+    <div id="exportar-simulacion" ref={containerRef}>
       {!loaded && <div>Cargando gráfico Gantt...</div>}
       <h5 style={{ textAlign: "center" }}>Path {path}</h5>
 
@@ -126,16 +143,17 @@ const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
           paddingBottom: "10px"
         }}
       >
+        {/* Escala de semanas */}
         <div
           style={{
             display: "flex",
             gap: "40px",
-            marginLeft: "160px",
+            marginLeft: "20px",
             fontSize: "13px",
             marginBottom: "5px"
           }}
         >
-          {Array.from({ length:19 }).map((_, i) => (
+          {Array.from({ length: semanasTotales + 1 }).map((_, i) => (
             <div key={i}>{i}</div>
           ))}
         </div>
@@ -143,8 +161,8 @@ const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
         <div
           ref={chartRef}
           style={{
-            width: "max-content",
-            minWidth: "100%"
+            width: "100%", 
+            minWidth: "600px"
           }}
         />
       </div>
@@ -152,4 +170,4 @@ const GanttChartGoogle = ({ simData, path = "A", keyPrefix = "" }) => {
   );
 };
 
-export default GanttChartGoogle;
+export default GanttChart;
